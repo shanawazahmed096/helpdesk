@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+
+# Build output
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+
+# macOS
+.DS_Store
+
+# Prisma
+prisma/dev.db
+
+# Misc
+*.tmp
+
+*.zip
+.git_backup/
