@@ -24,6 +24,7 @@ const ticketInclude = {
       firstName: true,
       lastName: true,
       email: true,
+      avatarUrl: true,
     },
   },
   assignedTo: {
@@ -32,6 +33,7 @@ const ticketInclude = {
       firstName: true,
       lastName: true,
       email: true,
+      avatarUrl: true,
     },
   },
   _count: {

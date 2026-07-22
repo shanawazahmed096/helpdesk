@@ -5,6 +5,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import path from "path";
 
 import { config } from "./config/env.config.js";
 import { requestLogger } from "./middlewares/logger.middleware.js";
@@ -18,6 +19,9 @@ import rolesRoutes from "./routes/roles.route.js";
 import departmentRoutes from "./routes/department.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 import ticketRoutes from "./routes/ticket.route.js";
+import commentRoutes from "./routes/comment.route.js";
+import attachmentRoutes from "./routes/attachment.route.js";
+import activityRoutes from "./routes/activity.routes.js";
 
 const app: Application = express();
 
@@ -54,6 +58,13 @@ app.use("/api/v1/roles", rolesRoutes);
 app.use("/api/v1/departments", departmentRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/tickets", ticketRoutes);
+app.use("/api/v1/comments", commentRoutes);
+app.use(
+  "/uploads",
+  express.static(path.resolve("uploads"))
+);
+app.use("/api/v1/attachments", attachmentRoutes);
+app.use("/api/v1/activity", activityRoutes);
 
 // 6. 404 & Centralized Error Infrastructure
 app.use(notFoundHandler);

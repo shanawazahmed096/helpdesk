@@ -194,14 +194,35 @@ model Attachment {
   @@index([deletedAt])
 }
 
+enum ActivityAction {
+  TICKET_CREATED
+  TICKET_UPDATED
+  STATUS_CHANGED
+  PRIORITY_CHANGED
+  ASSIGNED
+  UNASSIGNED
+  COMMENT_ADDED
+  COMMENT_UPDATED
+  COMMENT_DELETED
+  ATTACHMENT_UPLOADED
+  ATTACHMENT_DELETED
+  CATEGORY_CHANGED
+  DEPARTMENT_CHANGED
+  TICKET_CLOSED
+  TICKET_REOPENED
+  USER_MENTIONED
+}
+
 model ActivityLog {
-  id        String    @id @default(uuid()) @db.Uuid
-  action    String
+  id        String         @id @default(uuid()) @db.Uuid
+  action    ActivityAction
   details   Json?
-  ticketId  String    @db.Uuid
-  actorId   String?   @db.Uuid
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+
+  ticketId  String         @db.Uuid
+  actorId   String?        @db.Uuid
+
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
   deletedAt DateTime?
 
   ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)

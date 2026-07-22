@@ -51,7 +51,7 @@ export class TicketController {
     next: NextFunction
   ) {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
 
       const ticket = await TicketService.findById(id);
 
@@ -89,7 +89,7 @@ export class TicketController {
     next: NextFunction
   ) {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
 
       const ticket = await TicketService.update(id, req.body);
 
@@ -109,7 +109,7 @@ export class TicketController {
     next: NextFunction
   ) {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
 
       const result = await TicketService.delete(id);
 
@@ -128,7 +128,7 @@ export class TicketController {
     next: NextFunction
   ) {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
 
       const ticket = await TicketService.changeStatus(
         id,
@@ -151,8 +151,7 @@ export class TicketController {
     next: NextFunction
   ) {
     try {
-      const id = req.params.id;
-
+      const id = req.params.id as string;
       const ticket = await TicketService.assign(
         id,
         req.body.assignedToId
