@@ -1,12 +1,13 @@
 import { ActivityAction, Prisma, TicketPriority, TicketStatus } from "@prisma/client";
 
-import { TicketRepository } from "../repositories/ticket.repository.js";
+import { TicketRepository, type TicketFilters } from "../repositories/ticket.repository.js";
 import { DepartmentRepository } from "../repositories/department.repository.js";
 import { CategoryRepository } from "../repositories/category.repository.js";
 import { UsersRepository } from "../repositories/users.repository.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { logActivity } from "../utils/activity-helper.util.js";
+import { getPagination } from "../utils/pagination.js";
 
 export const TicketService = {
   async create(data: any) {
@@ -117,15 +118,19 @@ export const TicketService = {
     return ticket;
   },
 
-  async findAll(filters: any) {
-    const tickets = await TicketRepository.findAll(filters);
-    const totalRecords = await TicketRepository.count(filters);
+async findAll(filters: TicketFilters) {
+  const {
+    tickets,
+    totalRecords,
+    page,
+    limit,
+  } = await TicketRepository.findAll(filters);
 
-    return {
-      tickets,
-      totalRecords,
-    };
-  },
+  return {
+    data: tickets,
+    pagination: getPagination(page, limit, totalRecords),
+  };
+},
   async findById(id: string) {
     const ticket = await TicketRepository.findById(id);
 

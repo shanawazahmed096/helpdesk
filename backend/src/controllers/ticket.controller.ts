@@ -1,5 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { TicketService } from "../services/ticket.service.js";
+import { Prisma, TicketPriority, TicketStatus } from "@prisma/client";
+import type { TicketFilters } from "../repositories/ticket.repository.js";
+
 
 export class TicketController {
   static async findAll(
@@ -11,34 +14,54 @@ export class TicketController {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
 
-      const filters = {
+      const filters: TicketFilters = {
         page,
         limit,
-        search: req.query.search?.toString(),
-        departmentId: req.query.departmentId?.toString(),
-        categoryId: req.query.categoryId?.toString(),
-        assignedToId: req.query.assignedToId?.toString(),
-        createdById: req.query.createdById?.toString(),
-        status: req.query.status?.toString(),
-        priority: req.query.priority?.toString(),
-        sortBy: req.query.sortBy?.toString(),
-        sortOrder: req.query.sortOrder?.toString(),
       };
+
+      if (req.query.search) {
+        filters.search = req.query.search.toString();
+      }
+
+      if (req.query.departmentId) {
+        filters.departmentId = req.query.departmentId.toString();
+      }
+
+      if (req.query.categoryId) {
+        filters.categoryId = req.query.categoryId.toString();
+      }
+
+      if (req.query.assignedToId) {
+        filters.assignedToId = req.query.assignedToId.toString();
+      }
+
+      if (req.query.createdById) {
+        filters.createdById = req.query.createdById.toString();
+      }
+
+      if (req.query.status) {
+        filters.status = req.query.status.toString() as TicketStatus;
+      }
+
+      if (req.query.priority) {
+        filters.priority = req.query.priority.toString() as TicketPriority;
+      }
+
+      if (req.query.sortBy) {
+        filters.sortBy =
+          req.query.sortBy.toString() as keyof Prisma.TicketOrderByWithRelationInput;
+      }
+
+      if (req.query.sortOrder) {
+        filters.sortOrder = req.query.sortOrder.toString() as Prisma.SortOrder;
+      }
 
       const result = await TicketService.findAll(filters);
 
       return res.status(200).json({
         success: true,
         message: "Tickets fetched successfully.",
-        data: result.tickets,
-        pagination: {
-          page,
-          limit,
-          totalRecords: result.totalRecords,
-          totalPages: Math.ceil(result.totalRecords / limit),
-          hasNextPage: page * limit < result.totalRecords,
-          hasPreviousPage: page > 1,
-        },
+        ...result,
       });
     } catch (error) {
       next(error);

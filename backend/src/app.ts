@@ -22,6 +22,7 @@ import ticketRoutes from "./routes/ticket.route.js";
 import commentRoutes from "./routes/comment.route.js";
 import attachmentRoutes from "./routes/attachment.route.js";
 import activityRoutes from "./routes/activity.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
 
 const app: Application = express();
 
@@ -65,6 +66,7 @@ app.use(
 );
 app.use("/api/v1/attachments", attachmentRoutes);
 app.use("/api/v1/activity", activityRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 // 6. 404 & Centralized Error Infrastructure
 app.use(notFoundHandler);

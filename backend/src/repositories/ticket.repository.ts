@@ -72,62 +72,63 @@ export const TicketRepository = {
     });
   },
 
-  async findAll(filters: TicketFilters) {
-    const {
-      search,
-      departmentId,
-      categoryId,
-      status,
-      priority,
-      assignedToId,
-      createdById,
-      page = 1,
-      limit = 10,
-      sortBy = "createdAt",
-      sortOrder = "desc",
-    } = filters;
+async findAll(filters: TicketFilters) {
+  const {
+    search,
+    departmentId,
+    categoryId,
+    status,
+    priority,
+    assignedToId,
+    createdById,
+    page = 1,
+    limit = 10,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+  } = filters;
 
-    const where: Prisma.TicketWhereInput = {
-      deletedAt: null,
-    };
+  const where: Prisma.TicketWhereInput = {
+    deletedAt: null,
+  };
 
-    if (search) {
-      where.OR = [
-        {
-          subject: {
-            contains: search,
-            mode: "insensitive",
-          },
+  if (search) {
+    where.OR = [
+      {
+        subject: {
+          contains: search,
+          mode: "insensitive",
         },
-        {
-          customerName: {
-            contains: search,
-            mode: "insensitive",
-          },
+      },
+      {
+        customerName: {
+          contains: search,
+          mode: "insensitive",
         },
-        {
-          customerEmail: {
-            contains: search,
-            mode: "insensitive",
-          },
+      },
+      {
+        customerEmail: {
+          contains: search,
+          mode: "insensitive",
         },
-        {
-          ticketNumber: {
-            contains: search,
-            mode: "insensitive",
-          },
+      },
+      {
+        ticketNumber: {
+          contains: search,
+          mode: "insensitive",
         },
-      ];
-    }
+      },
+    ];
+  }
 
-    if (departmentId) where.departmentId = departmentId;
-    if (categoryId) where.categoryId = categoryId;
-    if (status) where.status = status;
-    if (priority) where.priority = priority;
-    if (assignedToId) where.assignedToId = assignedToId;
-    if (createdById) where.createdById = createdById;
+  if (departmentId) where.departmentId = departmentId;
+  if (categoryId) where.categoryId = categoryId;
+  if (status) where.status = status;
+  if (priority) where.priority = priority;
+  if (assignedToId) where.assignedToId = assignedToId;
+  if (createdById) where.createdById = createdById;
 
-    return prisma.ticket.findMany({
+  const [tickets, totalRecords] = await Promise.all([
+    prisma.ticket.findMany({
       where,
       include: ticketInclude,
       skip: (page - 1) * limit,
@@ -135,8 +136,20 @@ export const TicketRepository = {
       orderBy: {
         [sortBy]: sortOrder,
       },
-    });
-  },
+    }),
+
+    prisma.ticket.count({
+      where,
+    }),
+  ]);
+
+  return {
+    tickets,
+    totalRecords,
+    page,
+    limit,
+  };
+},
 
   async count(filters: TicketFilters) {
     const where: Prisma.TicketWhereInput = {

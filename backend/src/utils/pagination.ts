@@ -26,3 +26,16 @@ export function getPagination(
     hasPreviousPage: page > 1,
   };
 }
+
+export function getPaginationOptions(
+  page: number,
+  limit: number
+) {
+  const currentPage = Math.max(1, page);
+  const pageSize = Math.max(1, limit);
+
+  return {
+    skip: (currentPage - 1) * pageSize,
+    take: pageSize,
+  };
+}
