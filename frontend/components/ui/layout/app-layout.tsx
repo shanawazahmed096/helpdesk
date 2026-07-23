@@ -1,6 +1,7 @@
 "use client";
 
 import { AppSidebar } from "./app-sidebar";
+import { AppHeader } from "./app-header";
 
 export function AppLayout({
   children,
@@ -8,12 +9,16 @@ export function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex h-screen bg-slate-100">
       <AppSidebar />
 
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      <div className="flex flex-1 flex-col">
+        <AppHeader />
+
+        <main className="flex-1 overflow-auto p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
